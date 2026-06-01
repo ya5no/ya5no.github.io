@@ -3,65 +3,193 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ya5no</title>
+  <title>ясно</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Courier+Prime&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      background: #0a0a0a;
-      color: #d0d0d0;
-      font-family: 'Courier New', monospace;
+      background: #f5f4f0;
+      color: #1a1a1a;
+      font-family: 'EB Garamond', serif;
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
     }
-    .container {
-      max-width: 600px;
+
+    /* Шахматные фигуры фоном */
+    .bg-pieces {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .bg-piece {
+      position: absolute;
+      font-size: 120px;
+      color: #1a1a1a;
+      opacity: 0.04;
+      user-select: none;
+      animation: drift 20s infinite ease-in-out;
+    }
+    .bg-piece:nth-child(1) { top: 5%; left: 5%; animation-delay: 0s; }
+    .bg-piece:nth-child(2) { top: 10%; right: 8%; animation-delay: -5s; font-size: 80px; }
+    .bg-piece:nth-child(3) { bottom: 10%; left: 10%; animation-delay: -10s; font-size: 90px; }
+    .bg-piece:nth-child(4) { bottom: 5%; right: 5%; animation-delay: -3s; }
+    .bg-piece:nth-child(5) { top: 50%; left: 2%; animation-delay: -7s; font-size: 60px; }
+    .bg-piece:nth-child(6) { top: 40%; right: 3%; animation-delay: -12s; font-size: 70px; }
+
+    @keyframes drift {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(3deg); }
+    }
+
+    /* Основной контент */
+    .main {
+      position: relative;
+      z-index: 1;
+      text-align: center;
       padding: 40px 20px;
     }
-    h1 {
-      font-size: 2em;
-      color: #ffffff;
-      letter-spacing: 8px;
-      margin-bottom: 8px;
+
+    /* Имя с glitch */
+    .name {
+      font-family: 'EB Garamond', serif;
+      font-size: clamp(64px, 15vw, 140px);
+      font-weight: 500;
+      letter-spacing: -2px;
+      color: #1a1a1a;
+      position: relative;
+      display: inline-block;
+      animation: fadeIn 1.5s ease forwards;
+      opacity: 0;
     }
-    .line {
-      width: 40px;
-      height: 1px;
-      background: #444;
-      margin: 24px 0;
+
+    .name::before,
+    .name::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
     }
-    p {
-      font-size: 0.9em;
-      line-height: 1.8;
-      color: #888;
-      margin-bottom: 16px;
+    .name::before {
+      animation: glitch1 4s infinite;
+      clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+      color: #1a1a1a;
+      opacity: 0;
     }
-    .tags {
-      margin-top: 32px;
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
+    .name::after {
+      animation: glitch2 4s infinite;
+      clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+      color: #1a1a1a;
+      opacity: 0;
     }
-    .tag {
-      font-size: 0.75em;
-      color: #444;
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes glitch1 {
+      0%, 85%, 100% { opacity: 0; transform: none; }
+      86% { opacity: 0.8; transform: translateX(-4px); }
+      88% { opacity: 0.8; transform: translateX(4px); }
+      90% { opacity: 0; transform: none; }
+      92% { opacity: 0.6; transform: translateX(-2px); }
+      94% { opacity: 0; }
+    }
+
+    @keyframes glitch2 {
+      0%, 85%, 100% { opacity: 0; transform: none; }
+      87% { opacity: 0.7; transform: translateX(4px); }
+      89% { opacity: 0.7; transform: translateX(-4px); }
+      91% { opacity: 0; transform: none; }
+      93% { opacity: 0.5; transform: translateX(2px); }
+      95% { opacity: 0; }
+    }
+
+    /* Линия */
+    .divider {
+      width: 1px;
+      height: 60px;
+      background: #1a1a1a;
+      margin: 32px auto;
+      opacity: 0.2;
+      animation: fadeIn 1.5s ease 0.5s forwards;
+      opacity: 0;
+    }
+
+    /* Шахматная доска декоративная */
+    .mini-board {
+      display: grid;
+      grid-template-columns: repeat(8, 18px);
+      grid-template-rows: repeat(2, 18px);
+      gap: 0;
+      margin: 0 auto 32px;
+      animation: fadeIn 1.5s ease 0.8s forwards;
+      opacity: 0;
+    }
+    .cell {
+      width: 18px;
+      height: 18px;
+    }
+    .cell.dark { background: #1a1a1a; opacity: 0.15; }
+    .cell.light { background: transparent; }
+
+    /* Подпись */
+    .note {
+      font-family: 'Courier Prime', monospace;
+      font-size: 11px;
+      color: #1a1a1a;
+      opacity: 0.3;
       letter-spacing: 3px;
-      text-transform: uppercase;
+      text-transform: lowercase;
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: fadeIn 2s ease 1.5s forwards;
+      opacity: 0;
+      white-space: nowrap;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>ya5no</h1>
-    <div class="line"></div>
-    <p>chess. code. pattern recognition.</p>
-    <p>somewhere in russia.</p>
-    <div class="tags">
-      <span class="tag">♟ chess</span>
-      <span class="tag">// code</span>
-      <span class="tag">∴ logic</span>
-    </div>
+
+  <!-- Фоновые фигуры -->
+  <div class="bg-pieces">
+    <span class="bg-piece">♔</span>
+    <span class="bg-piece">♞</span>
+    <span class="bg-piece">♛</span>
+    <span class="bg-piece">♜</span>
+    <span class="bg-piece">♟</span>
+    <span class="bg-piece">♝</span>
   </div>
+
+  <div class="main">
+    <h1 class="name" data-text="ясно">ясно</h1>
+
+    <div class="divider"></div>
+
+    <!-- Мини доска -->
+    <div class="mini-board" id="board"></div>
+  </div>
+
+  <p class="note">это мой ник</p>
+
+  <script>
+    // Генерируем мини доску
+    const board = document.getElementById('board');
+    for (let row = 0; row < 2; row++) {
+      for (let col = 0; col < 8; col++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell ' + ((row + col) % 2 === 0 ? 'dark' : 'light');
+        board.appendChild(cell);
+      }
+    }
+  </script>
 </body>
 </html>
